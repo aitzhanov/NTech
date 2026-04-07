@@ -59,7 +59,7 @@ We propose a system where:
 
 ## 🔄 System Flow
 
-                 ┌───────────────────────┐
+                ┌───────────────────────┐
                 │     Applications      │
                 └──────────┬────────────┘
                            │
@@ -75,7 +75,7 @@ We propose a system where:
                            │
                            ▼
                 ┌───────────────────────┐
-                │  Approval (Auto/Manual)│
+                │  Approval(Auto/Manual)│
                 └──────────┬────────────┘
                            │
                            ▼
@@ -110,7 +110,7 @@ We propose a system where:
                            │
                            ▼
                 ┌───────────────────────┐
-                │        Exit│
+                │        Exit           │
                 └───────────────────────┘
 ---
 

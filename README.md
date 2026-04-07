@@ -367,3 +367,31 @@ log_level = info
 ```
 
 ```
+4. Start Solana infrastructure
+
+Run all Solana infrastructure scripts from:
+
+cd project/infra
+
+Available commands:
+
+./bin/up.sh
+./bin/validator-check.sh
+./bin/status.sh
+./bin/bootstrap-keys.sh
+./bin/bootstrap-wallets.sh
+./bin/build-programs.sh
+./bin/deploy-programs.sh
+./bin/smoke-test.sh
+
+Stop or reset the local Solana environment:
+
+./bin/reset.sh
+./bin/down.sh
+Responsibility Split
+odoo/addons/ — Odoo modules
+bridge/gdm_solana_bridge/ — Solana bridge service
+solana/gdm_solana_programs/ — Solana on-chain programs
+infra/ — Docker, scripts, keys, validator state, logs, and deployment/runtime files
+
+```

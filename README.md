@@ -59,40 +59,27 @@ We propose a system where:
 
 ## 🔄 System Flow
 
- Applications
-     │
-     ▼
-AI Analysis
-     │
-     ▼
-AI Allocation Decision
-     │
-     ▼
-Approval (Auto / Manual)
-     │
-     ▼
-Write Allocation to Solana
-     │
-     ▼
-Contracts (Sign & Payment)
-     │
-     ▼
-Supply Execution
-     │
-     ▼
-AI Monitoring
-     │
-     ▼
-If issues detected
-     │
-     ▼
-AI Redistribution
-     │
-     ▼
-Update on Solana
-     │
-     ▼
-     End
+ [Applications]
+      ↓
+[AI Analysis]
+      ↓
+[AI Allocation Decision]
+      ↓
+[Approval]
+      ↓
+[Record on Solana]
+      ↓
+[Contracts]
+      ↓
+[Supply Execution]
+      ↓
+[AI Monitoring]
+      ↓
+[AI Redistribution]
+      ↓
+[Update on Solana]
+      ↓
+[End]
 ---
 
 ## 🧠 AI + Blockchain Interaction

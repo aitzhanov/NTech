@@ -1,0 +1,10 @@
+keys/*.json
+artifacts/*.so
+ledger/
+logs/
+state/deploy.json
+config/solana.local.generated.yml
+.env
+__pycache__/
+*.pyc
+target/

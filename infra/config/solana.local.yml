@@ -1,0 +1,29 @@
+solana:
+  network: localnet
+  rpc_url: http://gdm-solana-validator:8899
+  ws_url: ws://gdm-solana-validator:8900
+  faucet_url: http://gdm-solana-validator:9900
+  commitment: confirmed
+
+  # Absolute paths (from host, mounted at same path inside containers)
+  ledger_path: /opt/docker/chain-prod/ledger
+  logs_path: /opt/docker/chain-prod/logs
+  keys_path: /opt/docker/chain-prod/keys
+  state_path: /opt/docker/chain-prod/state
+  artifacts_path: /opt/docker/chain-prod/artifacts
+
+  keypairs:
+    payer: /opt/docker/chain-prod/keys/payer.json
+    authority: /opt/docker/chain-prod/keys/authority.json
+
+  program_keypairs:
+    contract: /opt/docker/chain-prod/keys/contract-program-keypair.json
+    document: /opt/docker/chain-prod/keys/document-program-keypair.json
+
+  program_artifacts:
+    contract: /opt/docker/chain-prod/artifacts/contract_state.so
+    document: /opt/docker/chain-prod/artifacts/document_verification.so
+
+  program_ids:
+    contract: null
+    document: null

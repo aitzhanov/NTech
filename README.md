@@ -60,72 +60,62 @@ We propose a system where:
 ## 🔄 System Flow
                 ┌───────────────────────┐
                 │     Applications      │
-                │  (Distributors send)  │
                 └──────────┬────────────┘
                            │
                            ▼
                 ┌───────────────────────┐
                 │      AI Analysis      │
-                │  - Demand evaluation  │
-                │  - Data validation    │
                 └──────────┬────────────┘
                            │
                            ▼
                 ┌───────────────────────┐
                 │ AI Allocation Decision│
-                │  - Volume calculation │
-                │  - Optimization       │
                 └──────────┬────────────┘
                            │
                            ▼
                 ┌───────────────────────┐
-                │ Approval Process      │
-                │ (Auto / Manual)       │
+                │  Approval (Auto/Manual)│
                 └──────────┬────────────┘
                            │
                            ▼
                 ┌───────────────────────┐
-                │  Solana Blockchain    │
-                │  - Store allocation   │
-                │  - Immutable record   │
+                │   Write to Solana     │
                 └──────────┬────────────┘
                            │
                            ▼
                 ┌───────────────────────┐
                 │       Contracts       │
-                │  (Sign & Payment)     │
                 └──────────┬────────────┘
                            │
                            ▼
                 ┌───────────────────────┐
                 │   Supply Execution    │
-                │  (Delivery process)   │
                 └──────────┬────────────┘
                            │
                            ▼
                 ┌───────────────────────┐
                 │    AI Monitoring      │
-                │  - Delivery tracking  │
-                │  - Anomaly detection  │
                 └──────────┬────────────┘
                            │
-          ┌────────────────┴────────────────┐
-          ▼                                 ▼
-┌───────────────────────┐         ┌───────────────────────┐
-│   No Issues Detected  │         │  Issues Detected       │
-│        → End          │         │  AI Redistribution     │
-└───────────────────────┘         │  - Reallocate volumes  │
-                                  │  - Optimize supply     │
-                                  └──────────┬────────────┘
-                                             │
-                                             ▼
-                                  ┌───────────────────────┐
-                                  │  Update on Solana     │
-                                  │  (State change)       │
-                                  └──────────┬────────────┘
-                                             │
-                                             ▼
-                                            End
+                           ▼
+                ┌───────────────────────┐
+                │ Issues detected?      │
+                └──────────┬────────────┘
+                           │
+          ┌───────────────┴───────────────┐
+          ▼                               ▼
+   ┌───────────────┐              ┌───────────────────────┐
+   │      No       │              │          Yes          │
+   │     → End     │              │   AI Redistribution   │
+   └───────────────┘              └──────────┬────────────┘
+                                            │
+                                            ▼
+                                 ┌───────────────────────┐
+                                 │  Update on Solana     │
+                                 └──────────┬────────────┘
+                                            │
+                                            ▼
+                                           End
 
 ---
 

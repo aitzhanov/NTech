@@ -58,65 +58,28 @@ We propose a system where:
 ---
 
 ## 🔄 System Flow
-                ┌───────────────────────┐
-                │     Applications      │
-                └──────────┬────────────┘
-                           │
-                           ▼
-                ┌───────────────────────┐
-                │      AI Analysis      │
-                └──────────┬────────────┘
-                           │
-                           ▼
-                ┌───────────────────────┐
-                │ AI Allocation Decision│
-                └──────────┬────────────┘
-                           │
-                           ▼
-                ┌───────────────────────┐
-                │  Approval (Auto/Manual)│
-                └──────────┬────────────┘
-                           │
-                           ▼
-                ┌───────────────────────┐
-                │   Write to Solana     │
-                └──────────┬────────────┘
-                           │
-                           ▼
-                ┌───────────────────────┐
-                │       Contracts       │
-                └──────────┬────────────┘
-                           │
-                           ▼
-                ┌───────────────────────┐
-                │   Supply Execution    │
-                └──────────┬────────────┘
-                           │
-                           ▼
-                ┌───────────────────────┐
-                │    AI Monitoring      │
-                └──────────┬────────────┘
-                           │
-                           ▼
-                ┌───────────────────────┐
-                │ Issues detected?      │
-                └──────────┬────────────┘
-                           │
-          ┌───────────────┴───────────────┐
-          ▼                               ▼
-   ┌───────────────┐              ┌───────────────────────┐
-   │      No       │              │          Yes          │
-   │     → End     │              │   AI Redistribution   │
-   └───────────────┘              └──────────┬────────────┘
-                                            │
-                                            ▼
-                                 ┌───────────────────────┐
-                                 │  Update on Solana     │
-                                 └──────────┬────────────┘
-                                            │
-                                            ▼
-                                           End
 
+ [Applications]
+      ↓
+[AI Analysis]
+      ↓
+[AI Allocation Decision]
+      ↓
+[Approval]
+      ↓
+[Record on Solana]
+      ↓
+[Contracts]
+      ↓
+[Supply Execution]
+      ↓
+[AI Monitoring]
+      ↓
+[AI Redistribution]
+      ↓
+[Update on Solana]
+      ↓
+[End]
 ---
 
 ## 🧠 AI + Blockchain Interaction

@@ -1,0 +1,43 @@
+<odoo>
+    <record id="view_contract_stage_tree" model="ir.ui.view">
+        <field name="name">contract.stage.tree</field>
+        <field name="model">contract.stage</field>
+        <field name="arch" type="xml">
+            <tree string="Contract Stages">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="fold" optional="show"/>
+                <field name="active" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_contract_stage_form" model="ir.ui.view">
+        <field name="name">contract.stage.form</field>
+        <field name="model">contract.stage</field>
+        <field name="arch" type="xml">
+            <form string="Contract Stage">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="fold"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_contract_stage" model="ir.actions.act_window">
+        <field name="name">Contract Stages</field>
+        <field name="res_model">contract.stage</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

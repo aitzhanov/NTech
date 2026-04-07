@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_gdm_ai_decision,gdm.ai.decision,model_gdm_ai_decision,base.group_system,1,1,1,1
+access_gdm_ai_rule_system,gdm.ai.rule system,model_gdm_ai_rule,base.group_system,1,1,1,1
+access_gdm_ai_rule_user,gdm.ai.rule user,model_gdm_ai_rule,base.group_user,1,0,0,0

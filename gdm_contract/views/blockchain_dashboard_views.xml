@@ -1,0 +1,54 @@
+<odoo>
+    <record id="view_contract_blockchain_tree" model="ir.ui.view">
+        <field name="name">contract.contract.blockchain.tree</field>
+        <field name="model">contract.contract</field>
+        <field name="arch" type="xml">
+            <tree string="Contracts on-chain"
+                  decoration-success="blockchain_status in ('verified', 'finalized')"
+                  decoration-info="blockchain_status == 'confirmed'"
+                  decoration-warning="blockchain_status == 'skipped'"
+                  decoration-danger="blockchain_status in ('error', 'failed')">
+                <field name="name" optional="show"/>
+                <field name="number" optional="show"/>
+                <field name="supplier_id" optional="show"/>
+                <field name="blockchain_status" optional="show"/>
+                <field name="onchain_version" optional="show"/>
+                <field name="blockchain_tx" optional="show"/>
+                <field name="write_date" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_contract_blockchain_search" model="ir.ui.view">
+        <field name="name">contract.contract.blockchain.search</field>
+        <field name="model">contract.contract</field>
+        <field name="arch" type="xml">
+            <search string="Contracts on-chain">
+                <field name="name"/>
+                <field name="number"/>
+                <field name="blockchain_tx"/>
+                <separator/>
+                <filter name="has_tx" string="Has TX"
+                        domain="[('blockchain_tx', '!=', False)]"/>
+                <filter name="status_verified" string="Verified"
+                        domain="[('blockchain_status', '=', 'verified')]"/>
+                <filter name="status_confirmed" string="Confirmed"
+                        domain="[('blockchain_status', '=', 'confirmed')]"/>
+                <filter name="status_error" string="Error"
+                        domain="[('blockchain_status', '=', 'error')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_status" string="Status"
+                            context="{'group_by': 'blockchain_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_contract_blockchain" model="ir.actions.act_window">
+        <field name="name">Contracts on-chain</field>
+        <field name="res_model">contract.contract</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('blockchain_tx', '!=', False)]</field>
+        <field name="search_view_id" ref="view_contract_blockchain_search"/>
+    </record>
+</odoo>

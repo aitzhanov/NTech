@@ -1,0 +1,95 @@
+<odoo noupdate="1">
+    <record id="rule_contract_has_supplier" model="gdm.ai.rule">
+        <field name="name">Contract: Supplier Required</field>
+        <field name="code">missing_supplier</field>
+        <field name="sequence">10</field>
+        <field name="active">True</field>
+        <field name="entity_model">contract.contract</field>
+        <field name="check_type">field_required</field>
+        <field name="field_name">supplier_id</field>
+        <field name="risk_level">high</field>
+        <field name="decision_on_fail">not_ready</field>
+        <field name="required_action_on_fail">complete_master_data</field>
+        <field name="message">Missing supplier</field>
+        <field name="trigger_onchain_on_pass">False</field>
+        <field name="description">Contract must have a supplier assigned.</field>
+    </record>
+
+    <record id="rule_contract_has_dates" model="gdm.ai.rule">
+        <field name="name">Contract: Start and End Dates Required</field>
+        <field name="code">missing_contract_dates</field>
+        <field name="sequence">20</field>
+        <field name="active">True</field>
+        <field name="entity_model">contract.contract</field>
+        <field name="check_type">field_required</field>
+        <field name="field_name">date_start</field>
+        <field name="risk_level">high</field>
+        <field name="decision_on_fail">not_ready</field>
+        <field name="required_action_on_fail">fix_dates</field>
+        <field name="message">Missing contract dates</field>
+        <field name="trigger_onchain_on_pass">False</field>
+        <field name="description">Contract must have both date_start and date_end.</field>
+    </record>
+
+    <record id="rule_contract_has_financials" model="gdm.ai.rule">
+        <field name="name">Contract: Amount or Volume Required</field>
+        <field name="code">missing_financials</field>
+        <field name="sequence">30</field>
+        <field name="active">True</field>
+        <field name="entity_model">contract.contract</field>
+        <field name="check_type">field_required</field>
+        <field name="field_name">amount_total</field>
+        <field name="risk_level">medium</field>
+        <field name="decision_on_fail">not_ready</field>
+        <field name="required_action_on_fail">review_financials</field>
+        <field name="message">Missing financials (amount/volume)</field>
+        <field name="trigger_onchain_on_pass">False</field>
+        <field name="description">Contract must have amount_total or volume_total.</field>
+    </record>
+
+    <record id="rule_contract_date_range" model="gdm.ai.rule">
+        <field name="name">Contract: Date Range Valid</field>
+        <field name="code">invalid_date_range</field>
+        <field name="sequence">40</field>
+        <field name="active">True</field>
+        <field name="entity_model">contract.contract</field>
+        <field name="check_type">date_range</field>
+        <field name="risk_level">high</field>
+        <field name="decision_on_fail">invalid</field>
+        <field name="required_action_on_fail">fix_dates</field>
+        <field name="message">Invalid date range</field>
+        <field name="trigger_onchain_on_pass">False</field>
+        <field name="description">date_start must be &lt;= date_end.</field>
+    </record>
+
+    <record id="rule_contract_amount_vs_invoice" model="gdm.ai.rule">
+        <field name="name">Contract: Invoice Amount Consistency</field>
+        <field name="code">invoice_amount_exceeds_contract</field>
+        <field name="sequence">50</field>
+        <field name="active">True</field>
+        <field name="entity_model">contract.contract</field>
+        <field name="check_type">amount_consistency</field>
+        <field name="threshold">1.2</field>
+        <field name="risk_level">medium</field>
+        <field name="decision_on_fail">review</field>
+        <field name="required_action_on_fail">review_financials</field>
+        <field name="message">Invoice amount exceeds contract</field>
+        <field name="trigger_onchain_on_pass">False</field>
+        <field name="description">Total invoices must not exceed contract amount × 1.2.</field>
+    </record>
+
+    <record id="rule_contract_ready_for_onchain" model="gdm.ai.rule">
+        <field name="name">Contract: Ready → Trigger Blockchain</field>
+        <field name="code">contract_ready_onchain</field>
+        <field name="sequence">99</field>
+        <field name="active">True</field>
+        <field name="entity_model">contract.contract</field>
+        <field name="check_type">custom</field>
+        <field name="risk_level">low</field>
+        <field name="decision_on_fail">not_ready</field>
+        <field name="required_action_on_fail">none</field>
+        <field name="message">Contract passed all checks</field>
+        <field name="trigger_onchain_on_pass">True</field>
+        <field name="description">Marker rule: if all prior rules pass — trigger on-chain registration.</field>
+    </record>
+</odoo>

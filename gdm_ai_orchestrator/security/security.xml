@@ -1,0 +1,5 @@
+<odoo>
+    <record id="group_gdm_ai_user" model="res.groups">
+        <field name="name">GDM AI User</field>
+    </record>
+</odoo>

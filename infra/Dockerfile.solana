@@ -1,0 +1,55 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV SOLANA_VERSION=1.18.26
+ENV SOLANA_ARCHIVE=solana-release-x86_64-unknown-linux-gnu.tar.bz2
+ENV SOLANA_ROOT=/opt/solana
+ENV PATH=${SOLANA_ROOT}/bin:${PATH}
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        wget \
+        bash \
+        jq \
+        git \
+        bzip2 \
+        xz-utils \
+        unzip \
+        libssl-dev \
+        pkg-config \
+        build-essential \
+        netcat-openbsd \
+        procps \
+        python3 \
+        bc \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /tmp/solana-download /opt \
+    && curl --http1.1 --retry 5 --retry-delay 5 -fL https://github.com/solana-labs/solana/releases/download/v${SOLANA_VERSION}/${SOLANA_ARCHIVE} \
+        -o /tmp/solana-download/${SOLANA_ARCHIVE} \
+    && tar -xjf /tmp/solana-download/${SOLANA_ARCHIVE} -C /tmp/solana-download \
+    && mv /tmp/solana-download/solana-release ${SOLANA_ROOT} \
+    && test -x ${SOLANA_ROOT}/bin/solana \
+    && test -x ${SOLANA_ROOT}/bin/solana-test-validator \
+    && ${SOLANA_ROOT}/bin/solana --version \
+    && rm -rf /tmp/solana-download
+
+RUN mkdir -p /solana/ledger /solana/logs /solana/keys /solana/config \
+               /solana/state /solana/bin /solana/artifacts
+
+# Pre-configure solana CLI to point at validator (overridden at runtime)
+RUN ${SOLANA_ROOT}/bin/solana config set --url http://gdm-solana-validator:8899 2>/dev/null || true
+
+WORKDIR /solana
+
+EXPOSE 8899 8900 9900
+
+CMD ["solana-test-validator", \
+     "--ledger", "/solana/ledger", \
+     "--bind-address", "0.0.0.0", \
+     "--rpc-port", "8899", \
+     "--faucet-port", "9900", \
+     "--limit-ledger-size", \
+     "--log"]

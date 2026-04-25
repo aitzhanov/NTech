@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_contract_stage_user,contract.stage user,model_contract_stage,gdm_contract.group_gdm_contract_user,1,0,0,0
+access_contract_stage_manager,contract.stage manager,model_contract_stage,gdm_contract.group_gdm_contract_manager,1,1,1,1
+access_contract_type_user,contract.type user,model_contract_type,gdm_contract.group_gdm_contract_user,1,0,0,0
+access_contract_type_manager,contract.type manager,model_contract_type,gdm_contract.group_gdm_contract_manager,1,1,1,1
+access_contract_contract_user,contract.contract user,model_contract_contract,gdm_contract.group_gdm_contract_user,1,1,1,0
+access_contract_contract_manager,contract.contract manager,model_contract_contract,gdm_contract.group_gdm_contract_manager,1,1,1,1
+access_contract_stage_system,contract.stage system,model_contract_stage,base.group_system,1,1,1,1
+access_contract_type_system,contract.type system,model_contract_type,base.group_system,1,1,1,1
+access_contract_contract_system,contract.contract system,model_contract_contract,base.group_system,1,1,1,1

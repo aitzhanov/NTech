@@ -1,0 +1,93 @@
+services:
+  solana-validator:
+    build:
+      context: .
+      dockerfile: Dockerfile.solana
+    container_name: gdm-solana-validator
+    command:
+      - solana-test-validator
+      - --ledger
+      - /solana/ledger
+      - --bind-address
+      - 0.0.0.0
+      - --rpc-port
+      - "8899"
+      - --faucet-port
+      - "9900"
+      - --limit-ledger-size
+      - --log
+    ports:
+      - "8899:8899"
+      - "8900:8900"
+      - "9900:9900"
+    volumes:
+      - /opt/docker/chain-prod/ledger:/solana/ledger
+      - /opt/docker/chain-prod/logs:/solana/logs
+      - /opt/docker/chain-prod/keys:/solana/keys
+      - /opt/docker/chain-prod/config:/solana/config
+      - /opt/docker/chain-prod/state:/solana/state
+      - /opt/docker/chain-prod/bin:/solana/bin
+      - /opt/docker/chain-prod/artifacts:/solana/artifacts
+    working_dir: /solana
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -sf -X POST http://127.0.0.1:8899 -H 'Content-Type: application/json' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getHealth\"}' | grep -q ok"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+    restart: unless-stopped
+    networks:
+      - default
+
+  solana-tools:
+    build:
+      context: .
+      dockerfile: Dockerfile.solana
+    container_name: gdm-solana-tools
+    entrypoint: ["/bin/sh", "-lc"]
+    command: ["sleep infinity"]
+    volumes:
+      - /opt/docker/chain-prod/ledger:/solana/ledger
+      - /opt/docker/chain-prod/logs:/solana/logs
+      - /opt/docker/chain-prod/keys:/solana/keys
+      - /opt/docker/chain-prod/config:/solana/config
+      - /opt/docker/chain-prod/state:/solana/state
+      - /opt/docker/chain-prod/bin:/solana/bin
+      - /opt/docker/chain-prod/artifacts:/solana/artifacts
+    working_dir: /solana
+    depends_on:
+      solana-validator:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - default
+
+  solana-bridge:
+    build:
+      context: /opt/docker/chain-prod/gdm_solana_bridge
+      dockerfile: Dockerfile.bridge
+    container_name: gdm-solana-bridge
+    env_file:
+      - /opt/docker/chain-prod/.env
+    volumes:
+      - /opt/docker/chain-prod/config:/app/config
+      - /opt/docker/chain-prod/keys:/app/keys
+      - /opt/docker/chain-prod/state:/app/state
+      - /opt/docker/chain-prod/logs:/app/logs
+    ports:
+      - "8181:8080"
+    depends_on:
+      solana-validator:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - default
+
+networks:
+  default:
+    external: true
+    name: solana-prod

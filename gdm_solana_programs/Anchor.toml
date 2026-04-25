@@ -1,0 +1,10 @@
+[programs.localnet]
+contract_state_program = "Ctrt1111111111111111111111111111111111111"
+document_verification_program = "Docu1111111111111111111111111111111111111"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "mocha -t 1000000 tests/**/*.ts"

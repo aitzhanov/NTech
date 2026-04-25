@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:13
+    container_name: project_pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: odoo15
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  odoo:
+    image: odoo:15.0
+    container_name: project_odoo
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    environment:
+      HOST: db
+      PORT: 5432
+      USER: odoo
+      PASSWORD: odoo
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - ../gdm_contract:/mnt/custom-addons/gdm_contract
+      - ../gdm_ai_orchestrator:/mnt/custom-addons/gdm_ai_orchestrator
+      - ../arch_claude_client:/mnt/custom-addons/arch_claude_client
+      - ./config/odoo.conf:/etc/odoo/odoo.conf
+    command: ["odoo", "-c", "/etc/odoo/odoo.conf"]
+
+volumes:
+  pg_data:
+  odoo_data:

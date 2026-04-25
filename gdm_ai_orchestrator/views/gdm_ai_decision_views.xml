@@ -1,0 +1,113 @@
+<odoo>
+    <record id="view_gdm_ai_decision_tree" model="ir.ui.view">
+        <field name="name">gdm.ai.decision.tree</field>
+        <field name="model">gdm.ai.decision</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="risk_level == 'high'"
+                  decoration-warning="risk_level == 'medium'"
+                  decoration-success="final_status == 'completed'"
+                  decoration-muted="final_status in ('rejected','failed')">
+                <field name="create_date" string="Date"/>
+                <field name="entity_model" string="Model"/>
+                <field name="entity_res_id" string="ID"/>
+                <field name="trigger_event" string="Event"/>
+                <field name="decision" string="Decision"/>
+                <field name="risk_level" string="Risk"/>
+                <field name="confidence" string="Confidence" widget="float"/>
+                <field name="required_action" string="Action"/>
+                <field name="action_route" string="Route"/>
+                <field name="requires_onchain_action" string="Onchain"/>
+                <field name="blockchain_sync_status" string="Blockchain"/>
+                <field name="final_status" string="Status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_gdm_ai_decision_form" model="ir.ui.view">
+        <field name="name">gdm.ai.decision.form</field>
+        <field name="model">gdm.ai.decision</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_manual_approve" string="✅ Approve" type="object"
+                            class="btn-success"
+                            attrs="{'invisible': [('final_status', 'in', ('approved','completed'))]}"/>
+                    <button name="action_manual_reject" string="❌ Reject" type="object"
+                            class="btn-danger"
+                            attrs="{'invisible': [('final_status', 'in', ('rejected',))]}"/>
+                    <button name="action_manual_escalate" string="⬆ Escalate" type="object"
+                            attrs="{'invisible': [('final_status', 'in', ('escalated','completed'))]}"/>
+                    <button name="action_resync_blockchain" string="🔄 Resync Blockchain" type="object"
+                            attrs="{'invisible': [('requires_onchain_action', '=', False)]}"/>
+                    <button name="action_rerun_ai" string="↻ Re-run" type="object"/>
+                    <field name="final_status" widget="statusbar"
+                           statusbar_visible="draft,evaluated,approved,pending_onchain,completed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Entity">
+                            <field name="entity_model"/>
+                            <field name="entity_res_id"/>
+                            <field name="trigger_event"/>
+                            <field name="decision_type"/>
+                        </group>
+                        <group string="Decision">
+                            <field name="decision"/>
+                            <field name="risk_level"/>
+                            <field name="confidence"/>
+                            <field name="required_action"/>
+                            <field name="action_route"/>
+                            <field name="requires_manual_review"/>
+                            <field name="requires_onchain_action"/>
+                        </group>
+                    </group>
+                    <group string="Reasoning">
+                        <field name="reasoning_summary" nolabel="1"/>
+                    </group>
+                    <group>
+                        <group string="Blockchain">
+                            <field name="blockchain_sync_status"/>
+                            <field name="blockchain_action_status"/>
+                            <field name="blockchain_action"/>
+                            <field name="blockchain_request_id"/>
+                            <field name="blockchain_tx_hash"/>
+                            <field name="blockchain_last_sync_at"/>
+                            <field name="blockchain_error_code"
+                                   attrs="{'invisible': [('blockchain_error_code', '=', False)]}"/>
+                            <field name="blockchain_error_message"
+                                   attrs="{'invisible': [('blockchain_error_message', '=', False)]}"/>
+                        </group>
+                        <group string="Override">
+                            <field name="manual_override"/>
+                            <field name="override_reason"
+                                   attrs="{'invisible': [('manual_override', '=', False)]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Context Snapshot">
+                            <field name="context_snapshot_json" widget="ace" options="{'mode': 'json'}"/>
+                        </page>
+                        <page string="Reasons">
+                            <field name="reasons_json" widget="ace" options="{'mode': 'json'}"/>
+                        </page>
+                        <page string="Blockchain Payload">
+                            <field name="blockchain_payload_json" widget="ace" options="{'mode': 'json'}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_gdm_ai_decision" model="ir.actions.act_window">
+        <field name="name">AI Decisions</field>
+        <field name="res_model">gdm.ai.decision</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_gdm_ai_decision"
+              name="AI Decisions"
+              parent="gdm_contract.menu_contract_config_root"
+              action="action_gdm_ai_decision"
+              sequence="50"/>
+</odoo>

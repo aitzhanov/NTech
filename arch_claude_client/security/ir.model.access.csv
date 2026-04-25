@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_gdm_claude_agent_log_user,gdm.claude.agent.log user,model_gdm_claude_agent_log,,1,0,0,0
+access_gdm_claude_agent_log_manager,gdm.claude.agent.log manager,model_gdm_claude_agent_log,base.group_system,1,1,1,1

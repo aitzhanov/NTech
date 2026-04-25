@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ════════════════════════════════════════════════════════════
+         res.config.settings — блок настроек Claude AI
+         Путь: Настройки → Claude AI (в общем разделе настроек)
+    ════════════════════════════════════════════════════════════ -->
+    <record id="view_claude_settings" model="ir.ui.view">
+        <field name="name">res.config.settings.claude</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block"
+                     data-string="Claude AI"
+                     string="Claude AI"
+                     data-key="arch_claude_client">
+
+                    <h2>Claude AI</h2>
+
+                    <!-- Включение / выключение -->
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="arch_claude_enabled" widget="boolean_toggle"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="arch_claude_enabled"/>
+                                <div class="text-muted">
+                                    Включить Claude AI в pipeline оркестратора.
+                                    Если выключено — решения принимаются только по правилам.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- API Key -->
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="arch_claude_api_key"/>
+                                <div class="text-muted">
+                                    Секретный ключ Anthropic.
+                                    Получить на
+                                    <a href="https://console.anthropic.com" target="_blank">
+                                        console.anthropic.com
+                                    </a>
+                                </div>
+                                <field name="arch_claude_api_key"
+                                       password="True"
+                                       placeholder="sk-ant-api03-..."/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Model -->
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="arch_claude_model"/>
+                                <div class="text-muted">
+                                    Claude Sonnet — рекомендуется для production.
+                                    Haiku — быстрее и дешевле, подходит для тестов.
+                                </div>
+                                <field name="arch_claude_model"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Timeout -->
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="arch_claude_timeout"/>
+                                <div class="text-muted">
+                                    Максимальное время ожидания ответа API. Рекомендуется 30–60 сек.
+                                </div>
+                                <field name="arch_claude_timeout"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ping кнопка -->
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Проверка соединения</span>
+                                <div class="text-muted">
+                                    Проверить доступность Claude API с текущим ключом и моделью.
+                                </div>
+                                <button name="action_claude_ping"
+                                        type="object"
+                                        string="Проверить соединение"
+                                        class="btn btn-secondary mt4"
+                                        icon="fa-bolt"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════
+         gdm.claude.agent.log — List View
+    ════════════════════════════════════════════════════════════ -->
+    <record id="view_claude_agent_log_list" model="ir.ui.view">
+        <field name="name">gdm.claude.agent.log.list</field>
+        <field name="model">gdm.claude.agent.log</field>
+        <field name="arch" type="xml">
+            <tree string="Claude Agent Calls"
+                  decoration-danger="risk_level == 'high'"
+                  decoration-warning="risk_level == 'medium'"
+                  decoration-muted="fallback == True">
+                <field name="create_date" string="Called At"/>
+                <field name="scenario"/>
+                <field name="model_used"/>
+                <field name="decision"/>
+                <field name="risk_level"/>
+                <field name="confidence" widget="percentage"/>
+                <field name="tokens_used"/>
+                <field name="fallback"/>
+                <field name="reasoning_summary"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_claude_agent_log_form" model="ir.ui.view">
+        <field name="name">gdm.claude.agent.log.form</field>
+        <field name="model">gdm.claude.agent.log</field>
+        <field name="arch" type="xml">
+            <form string="Claude Agent Call" create="false" edit="false">
+                <sheet>
+                    <group string="Call Info">
+                        <field name="create_date" string="Called At"/>
+                        <field name="scenario"/>
+                        <field name="model_used"/>
+                        <field name="tokens_used"/>
+                        <field name="fallback"/>
+                    </group>
+                    <group string="Decision">
+                        <field name="decision"/>
+                        <field name="risk_level"/>
+                        <field name="confidence"/>
+                        <field name="reasoning_summary"/>
+                    </group>
+                    <notebook>
+                        <page string="Context Snapshot">
+                            <field name="context_snapshot" widget="ace"
+                                   options="{'mode': 'json'}" nolabel="1"/>
+                        </page>
+                        <page string="Raw API Response">
+                            <field name="raw_response" widget="ace"
+                                   options="{'mode': 'json'}" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_claude_agent_log" model="ir.actions.act_window">
+        <field name="name">Claude Agent Logs</field>
+        <field name="res_model">gdm.claude.agent.log</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_arch_claude_root"
+              name="Claude AI"
+              sequence="99"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_claude_agent_log"
+              name="Логи вызовов"
+              parent="menu_arch_claude_root"
+              action="action_claude_agent_log"
+              sequence="10"
+              groups="base.group_system"/>
+
+</odoo>

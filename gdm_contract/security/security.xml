@@ -1,0 +1,12 @@
+<odoo>
+    <record id="group_gdm_contract_user" model="res.groups">
+        <field name="name">GDM Contract User</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+
+    <record id="group_gdm_contract_manager" model="res.groups">
+        <field name="name">GDM Contract Manager</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[(4, ref('group_gdm_contract_user'))]"/>
+    </record>
+</odoo>

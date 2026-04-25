@@ -1,0 +1,129 @@
+<odoo>
+    <record id="view_contract_contract_tree" model="ir.ui.view">
+        <field name="name">contract.contract.tree</field>
+        <field name="model">contract.contract</field>
+        <field name="arch" type="xml">
+            <tree string="Contracts"
+                  decoration-muted="not active"
+                  decoration-success="blockchain_status == 'verified'"
+                  decoration-warning="blockchain_status == 'error'">
+                <field name="active" invisible="1"/>
+                <field name="name" optional="show"/>
+                <field name="number" optional="show"/>
+                <field name="contract_type_id" optional="show"/>
+                <field name="supplier_id" optional="show"/>
+                <field name="operator_comp_id" optional="show"/>
+                <field name="date_start" optional="show"/>
+                <field name="date_end" optional="show"/>
+                <field name="amount_total" optional="show"/>
+                <field name="stage_id" optional="show"/>
+                <field name="blockchain_status" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_contract_contract_form" model="ir.ui.view">
+        <field name="name">contract.contract.form</field>
+        <field name="model">contract.contract</field>
+        <field name="arch" type="xml">
+            <form string="Contract">
+                <header>
+                    <button name="action_ai_blockchain_approve"
+                            string="Approve via AI + Blockchain"
+                            type="object"
+                            class="oe_highlight"/>
+                    <button name="action_verify_onchain"
+                            string="Verify on-chain"
+                            type="object"/>
+                    <field name="stage_id" widget="statusbar"
+                           options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="Contract name..."/></h1>
+                        <div class="o_row">
+                            <field name="number" placeholder="Contract number"/>
+                            <field name="active" invisible="1"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Parties">
+                            <field name="operator_comp_id"/>
+                            <field name="operator_comp_ceo_id"/>
+                            <field name="operator_comp_executor_id"/>
+                            <field name="supplier_id"/>
+                        </group>
+                        <group string="Contract Details">
+                            <field name="contract_type_id"/>
+                            <field name="date"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="volume_total"/>
+                            <field name="uom_id"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="amount_total"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Blockchain" name="blockchain">
+                            <group>
+                                <group string="On-chain Status">
+                                    <field name="blockchain_status" readonly="1"/>
+                                    <field name="onchain_version" readonly="1"/>
+                                </group>
+                                <group string="Transaction">
+                                    <field name="blockchain_tx" readonly="1"/>
+                                    <field name="uuid" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_contract_contract_search" model="ir.ui.view">
+        <field name="name">contract.contract.search</field>
+        <field name="model">contract.contract</field>
+        <field name="arch" type="xml">
+            <search string="Contracts">
+                <field name="name"/>
+                <field name="number"/>
+                <field name="supplier_id"/>
+                <field name="operator_comp_id"/>
+                <separator/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="blockchain_verified" string="On-chain"
+                        domain="[('blockchain_tx', '!=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_stage" string="Stage"
+                            context="{'group_by': 'stage_id'}"/>
+                    <filter name="group_type" string="Type"
+                            context="{'group_by': 'contract_type_id'}"/>
+                    <filter name="group_operator" string="Operator"
+                            context="{'group_by': 'operator_comp_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_contract_contract" model="ir.actions.act_window">
+        <field name="name">Contracts</field>
+        <field name="res_model">contract.contract</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_contract_contract_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+</odoo>

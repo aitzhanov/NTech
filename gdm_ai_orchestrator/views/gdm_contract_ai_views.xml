@@ -1,0 +1,20 @@
+<odoo>
+    <record id="view_contract_form_ai_inherit" model="ir.ui.view">
+        <field name="name">contract.contract.ai.inherit</field>
+        <field name="model">contract.contract</field>
+        <field name="inherit_id" ref="gdm_contract.view_contract_contract_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="AI Decisions" name="ai_decisions">
+                    <group>
+                        <button name="%(gdm_ai_orchestrator.action_gdm_ai_decision)d"
+                                type="action"
+                                string="View AI Decisions"
+                                class="btn-secondary"
+                                context="{'search_default_entity_res_id': active_id}"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

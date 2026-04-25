@@ -1,0 +1,54 @@
+<odoo>
+    <!-- Root menu -->
+    <menuitem id="gdm_contract_menu_root"
+              name="Contracts"
+              sequence="20"
+              groups="gdm_contract.group_gdm_contract_user"/>
+
+    <!-- Contracts -->
+    <menuitem id="menu_contract_root"
+              name="Contracts"
+              parent="gdm_contract_menu_root"
+              sequence="1"/>
+
+    <menuitem id="menu_contract_contract"
+              name="All Contracts"
+              parent="menu_contract_root"
+              action="action_contract_contract"
+              sequence="1"
+              groups="gdm_contract.group_gdm_contract_user"/>
+
+    <!-- Blockchain -->
+    <menuitem id="menu_contract_blockchain_root"
+              name="Blockchain"
+              parent="gdm_contract_menu_root"
+              sequence="2"/>
+
+    <menuitem id="menu_contract_blockchain"
+              name="Contracts on-chain"
+              parent="menu_contract_blockchain_root"
+              action="action_contract_blockchain"
+              sequence="1"
+              groups="gdm_contract.group_gdm_contract_user"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_contract_config_root"
+              name="Configuration"
+              parent="gdm_contract_menu_root"
+              sequence="10"
+              groups="gdm_contract.group_gdm_contract_manager"/>
+
+    <menuitem id="menu_contract_stage"
+              name="Stages"
+              parent="menu_contract_config_root"
+              action="action_contract_stage"
+              sequence="1"
+              groups="gdm_contract.group_gdm_contract_manager"/>
+
+    <menuitem id="menu_contract_type"
+              name="Contract Types"
+              parent="menu_contract_config_root"
+              action="action_contract_type"
+              sequence="2"
+              groups="gdm_contract.group_gdm_contract_manager"/>
+</odoo>

@@ -33,6 +33,16 @@ We propose a system where:
 
 ---
 
+## 🌍 Real-World Impact
+
+- Transparent LPG allocation  
+- Reduced corruption risks  
+- Automated decision-making  
+- Efficient resource distribution  
+- Real-time tracking and monitoring  
+
+---
+
 ## ⚙️ Key Features
 
 ### 🤖 AI Decision Engine
@@ -179,128 +189,33 @@ AI → Decision → On-chain Transaction → Smart Contract State Change
 
 ---
 
-## 🌍 Real-World Impact
+Odoo + PostgreSQL Setup
+2. Open Project Folder
 
-- Transparent LPG allocation  
-- Reduced corruption risks  
-- Automated decision-making  
-- Efficient resource distribution  
-- Real-time tracking and monitoring  
+Open the project root:
 
----
+C:\Users\Alikhan\Documents\Python projects\NTech-main\NTech-main
 
-## Setup
+The folder should contain:
 
-This project includes three main runtime layers:
+arch_claude_client
+gdm_ai_orchestrator
+gdm_contract
+gdm_solana_bridge
+gdm_solana_programs
+infra
+3. Go to infra
 
-- **Odoo 15 Community Edition**
-- **PostgreSQL**
-- **Solana local infrastructure**
+In PowerShell:
 
-### 1. Start PostgreSQL and Odoo 15 CE
+cd "C:\Users\Alikhan\Documents\Python projects\NTech-main\NTech-main\infra"
+4. Create docker-compose.odoo.yml
 
-Run from:
+Create file:
 
-```bash
-cd project/infra
-docker compose -f docker-compose.odoo.yml up -d
-````
+infra/docker-compose.odoo.yml
 
-Check logs:
-
-```bash
-docker compose -f docker-compose.odoo.yml logs -f
-```
-
-Open Odoo in the browser:
-
-```text
-http://localhost:8069
-```
-
-### 2. Configure the Odoo database
-
-Create or select the database for the project.
-
-The custom addons are mounted from:
-
-```text
-project/odoo/addons/
-```
-
-Required Odoo modules:
-
-* `gdm_contract`
-* `gdm_ai_orchestrator`
-* `gdm_claude_agent`
-
-### 3. Install Odoo modules
-
-After Odoo starts:
-
-1. Open **Apps**
-2. Update the Apps List
-3. Install:
-
-   * `gdm_contract`
-   * `gdm_ai_orchestrator`
-   * `gdm_claude_agent`
-
-### 4. Start Solana infrastructure
-
-Run all Solana infrastructure scripts from:
-
-```bash
-cd project/infra
-```
-
-Start the local environment and validate it:
-
-```bash
-./bin/up.sh
-./bin/validator-check.sh
-./bin/status.sh
-```
-
-Initialize keys and wallets:
-
-```bash
-./bin/bootstrap-keys.sh
-./bin/bootstrap-wallets.sh
-```
-
-Build and deploy Solana programs:
-
-```bash
-./bin/build-programs.sh
-./bin/deploy-programs.sh
-```
-
-Run the smoke test:
-
-```bash
-./bin/smoke-test.sh
-```
-
-### 5. Stop or reset the Solana environment
-
-```bash
-./bin/reset.sh
-./bin/down.sh
-```
-
-### 6. Docker Compose for Odoo 15 CE and PostgreSQL
-
-Create the file:
-
-```text
-project/infra/docker-compose.odoo.yml
-```
-
-with the following content:
-
-```yaml
-version: "3.9"
+Paste:
 
 services:
   db:
@@ -331,26 +246,27 @@ services:
       PASSWORD: odoo
     volumes:
       - odoo_data:/var/lib/odoo
-      - ../odoo/addons:/mnt/custom-addons
+      - ../gdm_contract:/mnt/custom-addons/gdm_contract
+      - ../gdm_ai_orchestrator:/mnt/custom-addons/gdm_ai_orchestrator
+      - ../arch_claude_client:/mnt/custom-addons/arch_claude_client
       - ./config/odoo.conf:/etc/odoo/odoo.conf
     command: ["odoo", "-c", "/etc/odoo/odoo.conf"]
 
 volumes:
   pg_data:
   odoo_data:
-```
+5. Create config/odoo.conf
 
-### 7. Odoo configuration
+In infra, create folder:
 
-Create the file:
+mkdir config
 
-```text
-project/infra/config/odoo.conf
-```
+Create file:
 
-with the following content:
+infra/config/odoo.conf
 
-```ini
+Paste:
+
 [options]
 admin_passwd = admin
 db_host = db
@@ -364,4 +280,342 @@ proxy_mode = False
 limit_time_cpu = 600
 limit_time_real = 1200
 log_level = info
-```
+6. Start Odoo and PostgreSQL
+
+From infra:
+
+docker compose -f docker-compose.odoo.yml up -d
+
+Check containers:
+
+docker ps
+
+Expected containers:
+
+project_pg
+project_odoo
+
+Check logs:
+
+docker compose -f docker-compose.odoo.yml logs -f
+7. Initialize Odoo Database If Needed
+
+If http://localhost:8069 gives an error, initialize the database manually:
+
+docker exec -it project_odoo odoo -c /etc/odoo/odoo.conf -d odoo15 -i base --stop-after-init
+docker restart project_odoo
+8. Open Odoo
+
+Open:
+
+http://localhost:8069
+
+Login:
+
+admin
+
+Password:
+
+admin
+9. Install Odoo Modules
+
+Open Odoo in debug mode:
+
+http://localhost:8069/web?debug=1
+
+Go to:
+
+Apps
+
+Click:
+
+Update Apps List
+
+Install modules in this order:
+
+gdm_contract
+arch_claude_client
+gdm_ai_orchestrator
+
+Restart Odoo after installing modules:
+
+docker restart project_odoo
+Part 2 — Solana Local Infrastructure Setup
+10. Open WSL
+
+Open Ubuntu / WSL.
+
+Go to project infra folder:
+
+cd /mnt/c/Users/Alikhan/Documents/"Python projects"/NTech-main/NTech-main/infra
+11. Prepare Solana Runtime Folder
+
+Create runtime folder:
+
+sudo mkdir -p /opt/docker/chain-prod
+
+Copy infra files:
+
+sudo cp -r ./* /opt/docker/chain-prod/
+sudo cp .env.solana.local /opt/docker/chain-prod/.env
+
+Copy Solana programs:
+
+sudo cp -r /mnt/c/Users/Alikhan/Documents/"Python projects"/NTech-main/NTech-main/gdm_solana_programs /opt/docker/chain-prod/
+
+Go to runtime folder:
+
+cd /opt/docker/chain-prod
+12. Create Docker Network
+sudo docker network create solana-prod
+
+If it already exists, continue.
+
+13. Start Solana Infrastructure
+sudo bash ./bin/up.sh
+
+Check validator:
+
+sudo bash ./bin/validator-check.sh
+sudo bash ./bin/status.sh
+
+Expected:
+
+rpc health = ok
+validator healthy
+14. Check docker-compose.solana.yml
+
+Open:
+
+sudo nano /opt/docker/chain-prod/docker-compose.solana.yml
+
+Make sure solana-tools has this volume:
+
+      - /opt/docker/chain-prod/gdm_solana_programs:/solana/gdm_solana_programs
+
+Full expected solana-tools volumes:
+
+    volumes:
+      - /opt/docker/chain-prod/ledger:/solana/ledger
+      - /opt/docker/chain-prod/logs:/solana/logs
+      - /opt/docker/chain-prod/keys:/solana/keys
+      - /opt/docker/chain-prod/config:/solana/config
+      - /opt/docker/chain-prod/state:/solana/state
+      - /opt/docker/chain-prod/bin:/solana/bin
+      - /opt/docker/chain-prod/artifacts:/solana/artifacts
+      - /opt/docker/chain-prod/gdm_solana_programs:/solana/gdm_solana_programs
+
+Recreate solana-tools:
+
+sudo docker compose -f docker-compose.solana.yml up -d --force-recreate solana-tools
+
+Check mount:
+
+sudo docker exec -it gdm-solana-tools bash -lc 'ls /solana/gdm_solana_programs'
+15. Bootstrap Keys
+
+Run inside gdm-solana-tools:
+
+sudo docker exec -it gdm-solana-tools bash -lc 'bash /solana/bin/bootstrap-keys.sh'
+16. Bootstrap Wallets
+
+Run inside gdm-solana-tools:
+
+sudo docker exec -it gdm-solana-tools bash -lc 'bash /solana/bin/bootstrap-wallets.sh'
+
+Check:
+
+sudo bash ./bin/status.sh
+
+Expected keys:
+
+payer.json OK
+authority.json OK
+contract-program-keypair.json OK
+document-program-keypair.json OK
+17. Build Solana Programs
+
+From /opt/docker/chain-prod:
+
+sudo bash ./bin/build-programs.sh
+
+Expected result:
+
+contract_state.so OK
+document_verification.so OK
+BUILD SUCCESS
+18. Deploy Solana Programs
+
+Run inside gdm-solana-tools:
+
+sudo docker exec -it gdm-solana-tools bash -lc 'bash /solana/bin/deploy-programs.sh'
+
+Expected output includes program IDs.
+
+Current working local program IDs:
+
+contract_program_id: GqZAqQQEE6uq9ftdk78xA51ZnBEW4tF6bfE5pJF5H8tT
+document_program_id: 7DUQyBbeEYMud89Ekc3NpvxKQ9PYpDLvGpVex1wYWzXc
+19. Run Smoke Test
+sudo bash ./bin/smoke-test.sh
+
+Expected:
+
+=== RESULT: 6 passed, 0 failed ===
+20. Final Solana Status Check
+sudo bash ./bin/status.sh
+
+Expected:
+
+gdm-solana-validator Up healthy
+gdm-solana-tools Up
+gdm-solana-bridge Up
+rpc health ok
+artifacts OK
+keys OK
+deploy state exists
+Part 3 — Odoo ↔ Solana Integration Check
+21. Check Bridge Logs
+
+In WSL:
+
+sudo docker logs --tail 120 gdm-solana-bridge
+
+Successful integration should show:
+
+POST /tx/register_and_track HTTP/1.1" 200 OK
+22. Check Odoo Logs
+
+In PowerShell from infra:
+
+docker compose -f docker-compose.odoo.yml logs --tail=200 odoo
+
+Successful flow should show Odoo calling the Solana bridge and receiving a blockchain response.
+
+23. Test Contract Flow
+
+Open Odoo:
+
+http://localhost:8069/web?debug=1
+
+Create or update a contract.
+
+Expected backend flow:
+
+Odoo contract write/create
+AI Orchestrator decision
+Solana Bridge request
+Solana transaction submission
+Odoo blockchain fields update
+Useful Commands
+Restart Odoo
+docker restart project_odoo
+Restart Solana stack
+cd /opt/docker/chain-prod
+sudo bash ./bin/down.sh
+sudo bash ./bin/up.sh
+Check Odoo shell
+docker exec -it project_odoo odoo shell -d odoo15 -c /etc/odoo/odoo.conf
+Check latest contracts in Odoo shell
+env['contract.contract'].search([], order='id desc', limit=5).read([
+    'id',
+    'name',
+    'number',
+    'blockchain_status',
+    'blockchain_tx',
+    'onchain_version'
+])
+Check AI decisions in Odoo shell
+env['gdm.ai.decision'].search([], order='id desc', limit=5).read([
+    'id',
+    'entity_model',
+    'entity_res_id',
+    'decision',
+    'risk_level',
+    'final_status',
+    'blockchain_sync_status'
+])
+Troubleshooting
+Odoo does not open
+
+Check containers:
+
+docker ps
+
+Check logs:
+
+docker compose -f docker-compose.odoo.yml logs --tail=200 odoo
+
+Initialize database if needed:
+
+docker exec -it project_odoo odoo -c /etc/odoo/odoo.conf -d odoo15 -i base --stop-after-init
+docker restart project_odoo
+Odoo modules are not visible
+
+Open debug mode:
+
+http://localhost:8069/web?debug=1
+
+Then:
+
+Apps → Update Apps List
+Solana network does not start
+
+Create Docker network:
+
+sudo docker network create solana-prod
+
+Then:
+
+cd /opt/docker/chain-prod
+sudo bash ./bin/up.sh
+solana command not found
+
+Run Solana commands inside gdm-solana-tools:
+
+sudo docker exec -it gdm-solana-tools bash
+Bridge cannot reach validator
+
+Check .env:
+
+cat /opt/docker/chain-prod/.env
+
+Expected:
+
+SOLANA_RPC_URL=http://gdm-solana-validator:8899
+SOLANA_WS_URL=ws://gdm-solana-validator:8900
+
+Restart bridge:
+
+sudo docker compose -f docker-compose.solana.yml up -d --force-recreate solana-bridge
+Program ID mismatch
+
+Make sure the Solana program declare_id!() values match the deployed program IDs.
+
+Check deployed state:
+
+cat /opt/docker/chain-prod/state/deploy.json
+
+Check bridge client:
+
+grep -n 'CONTRACT_PROGRAM_ID' /opt/docker/chain-prod/gdm_solana_bridge/app/infrastructure/solana/client.py
+Repeated blockchain submits
+
+This can happen if contract writes trigger the orchestrator repeatedly.
+
+The working setup uses a context guard:
+
+skip_ai_trigger=True
+
+Blockchain field updates should use:
+
+contract.with_context(skip_ai_trigger=True).write(write_vals)
+Current Verified Branch
+
+Use this branch for the latest working local setup:
+
+fix/local-setup
+
+Clone directly:
+
+git clone -b fix/local-setup https://github.com/aitzhanov/NTech.git

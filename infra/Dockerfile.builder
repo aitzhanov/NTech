@@ -15,7 +15,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
 
 # Solana (внутри — rustc 1.75)
 RUN mkdir -p /tmp/solana-dl \
-    && curl -fL https://github.com/solana-labs/solana/releases/download/v1.18.26/solana-release-x86_64-unknown-linux-gnu.tar.bz2 \
+    && curl --http1.1 --retry 5 --retry-delay 5 -fL https://github.com/solana-labs/solana/releases/download/v1.18.26/solana-release-x86_64-unknown-linux-gnu.tar.bz2 \
         -o /tmp/solana-dl/solana.tar.bz2 \
     && tar -xjf /tmp/solana-dl/solana.tar.bz2 -C /tmp/solana-dl \
     && mv /tmp/solana-dl/solana-release /opt/solana \

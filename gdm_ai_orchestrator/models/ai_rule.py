@@ -17,7 +17,7 @@ class GDMAIRule(models.Model):
 
     # Scope
     entity_model = fields.Selection([
-        ('gdm.contract', 'Contract'),
+        ('contract.contract', 'Contract'),
         ('gdm.snt', 'SNT'),
         ('gdm.invoice', 'Invoice'),
     ], string='Entity Model', required=True, default='gdm.contract', index=True)

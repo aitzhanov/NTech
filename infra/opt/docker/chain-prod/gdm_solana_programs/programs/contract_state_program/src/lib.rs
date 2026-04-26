@@ -1,22 +1,30 @@
 use anchor_lang::prelude::*;
 
-declare_id!("47ffdTBLYsUpMMTYKnY6pMAUnQRXtCayLULTjWBryRns");
+declare_id!("FhXXErPW17TR5sX1ZviQNP7BuZnV22hiixtf1Ww9tYQ5");
 
 #[program]
 pub mod contract_state_program {
     use super::*;
 
-    pub fn register_contract(ctx: Context<RegisterContract>, contract_id: String, version: u64) -> Result<()> {
+    pub fn register_contract(
+        ctx: Context<RegisterContract>,
+        contract_id: String,
+        version: u64,
+    ) -> Result<()> {
         let state = &mut ctx.accounts.contract;
+
         require!(!state.is_initialized, ErrorCode::AlreadyInitialized);
+
         state.contract_id = contract_id;
         state.status = ContractStatus::Registered;
         state.version = version;
         state.authority = ctx.accounts.authority.key();
         state.is_initialized = true;
+
         let now = Clock::get()?.unix_timestamp;
         state.created_at = now;
         state.updated_at = now;
+
         Ok(())
     }
 
@@ -24,9 +32,11 @@ pub mod contract_state_program {
         let state = &mut ctx.accounts.contract;
         state.validate_transition(ContractStatus::Approved)?;
         state.enforce_version(version)?;
+
         state.status = ContractStatus::Approved;
         state.version = version;
         state.updated_at = Clock::get()?.unix_timestamp;
+
         Ok(())
     }
 
@@ -34,9 +44,11 @@ pub mod contract_state_program {
         let state = &mut ctx.accounts.contract;
         state.validate_transition(ContractStatus::Blocked)?;
         state.enforce_version(version)?;
+
         state.status = ContractStatus::Blocked;
         state.version = version;
         state.updated_at = Clock::get()?.unix_timestamp;
+
         Ok(())
     }
 
@@ -44,9 +56,11 @@ pub mod contract_state_program {
         let state = &mut ctx.accounts.contract;
         state.validate_transition(ContractStatus::Fulfilled)?;
         state.enforce_version(version)?;
+
         state.status = ContractStatus::Fulfilled;
         state.version = version;
         state.updated_at = Clock::get()?.unix_timestamp;
+
         Ok(())
     }
 
@@ -54,9 +68,11 @@ pub mod contract_state_program {
         let state = &mut ctx.accounts.contract;
         state.validate_transition(ContractStatus::Disputed)?;
         state.enforce_version(version)?;
+
         state.status = ContractStatus::Disputed;
         state.version = version;
         state.updated_at = Clock::get()?.unix_timestamp;
+
         Ok(())
     }
 }
@@ -87,6 +103,7 @@ impl ContractState {
             _ => err!(ErrorCode::InvalidTransition),
         }
     }
+
     pub fn enforce_version(&self, incoming: u64) -> Result<()> {
         require!(incoming > self.version, ErrorCode::VersionConflict);
         Ok(())
@@ -94,15 +111,32 @@ impl ContractState {
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Eq)]
-pub enum ContractStatus { Draft, Registered, UnderReview, Approved, Blocked, Fulfilled, Disputed, Finalized }
+pub enum ContractStatus {
+    Draft,
+    Registered,
+    UnderReview,
+    Approved,
+    Blocked,
+    Fulfilled,
+    Disputed,
+    Finalized,
+}
 
 #[derive(Accounts)]
 #[instruction(contract_id: String)]
 pub struct RegisterContract<'info> {
-    #[account(init, payer = authority, space = 512, seeds = [b"contract", contract_id.as_bytes()], bump)]
+    #[account(
+        init,
+        payer = authority,
+        space = 512,
+        seeds = [b"contract", contract_id.as_bytes()],
+        bump
+    )]
     pub contract: Account<'info, ContractState>,
+
     #[account(mut)]
     pub authority: Signer<'info>,
+
     pub system_program: Program<'info, System>,
 }
 
@@ -110,13 +144,18 @@ pub struct RegisterContract<'info> {
 pub struct UpdateContract<'info> {
     #[account(mut, has_one = authority)]
     pub contract: Account<'info, ContractState>,
+
     pub authority: Signer<'info>,
 }
 
 #[error_code]
 pub enum ErrorCode {
-    #[msg("Already initialized")] AlreadyInitialized,
-    #[msg("Invalid state transition")] InvalidTransition,
-    #[msg("Version conflict")] VersionConflict,
-    #[msg("Invalid authority")] InvalidAuthority,
+    #[msg("Already initialized")]
+    AlreadyInitialized,
+    #[msg("Invalid state transition")]
+    InvalidTransition,
+    #[msg("Version conflict")]
+    VersionConflict,
+    #[msg("Invalid authority")]
+    InvalidAuthority,
 }

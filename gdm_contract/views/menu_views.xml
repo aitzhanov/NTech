@@ -1,54 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Root menu -->
-    <menuitem id="gdm_contract_menu_root"
-              name="Contracts"
-              sequence="20"
-              groups="gdm_contract.group_gdm_contract_user"/>
 
-    <!-- Contracts -->
-    <menuitem id="menu_contract_root"
-              name="Contracts"
-              parent="gdm_contract_menu_root"
-              sequence="1"/>
+    <!-- Main GDM app menu -->
+    <menuitem
+        id="menu_gdm_contract_root"
+        name="GDM Contracts"
+        sequence="10"
+        web_icon="gdm_contract,static/description/icon.png"
+    />
 
-    <menuitem id="menu_contract_contract"
-              name="All Contracts"
-              parent="menu_contract_root"
-              action="action_contract_contract"
-              sequence="1"
-              groups="gdm_contract.group_gdm_contract_user"/>
+    <!-- Contracts action -->
+    <record id="action_gdm_contract_contracts" model="ir.actions.act_window">
+        <field name="name">Contracts</field>
+        <field name="res_model">contract.contract</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first GDM contract
+            </p>
+        </field>
+    </record>
 
-    <!-- Blockchain -->
-    <menuitem id="menu_contract_blockchain_root"
-              name="Blockchain"
-              parent="gdm_contract_menu_root"
-              sequence="2"/>
+    <!-- Contract Stages action -->
+    <record id="action_gdm_contract_stages" model="ir.actions.act_window">
+        <field name="name">Contract Stages</field>
+        <field name="res_model">contract.stage</field>
+        <field name="view_mode">tree,form</field>
+    </record>
 
-    <menuitem id="menu_contract_blockchain"
-              name="Contracts on-chain"
-              parent="menu_contract_blockchain_root"
-              action="action_contract_blockchain"
-              sequence="1"
-              groups="gdm_contract.group_gdm_contract_user"/>
+    <!-- Contract Types action -->
+    <record id="action_gdm_contract_types" model="ir.actions.act_window">
+        <field name="name">Contract Types</field>
+        <field name="res_model">contract.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
 
-    <!-- Configuration -->
-    <menuitem id="menu_contract_config_root"
-              name="Configuration"
-              parent="gdm_contract_menu_root"
-              sequence="10"
-              groups="gdm_contract.group_gdm_contract_manager"/>
+    <!-- Dashboard action -->
+    <record id="action_gdm_blockchain_dashboard" model="ir.actions.act_window">
+        <field name="name">Blockchain Dashboard</field>
+        <field name="res_model">contract.contract</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
 
-    <menuitem id="menu_contract_stage"
-              name="Stages"
-              parent="menu_contract_config_root"
-              action="action_contract_stage"
-              sequence="1"
-              groups="gdm_contract.group_gdm_contract_manager"/>
+    <!-- Main submenus -->
+    <menuitem
+        id="menu_gdm_contract_contracts"
+        name="Contracts"
+        parent="menu_gdm_contract_root"
+        action="action_gdm_contract_contracts"
+        sequence="10"
+    />
 
-    <menuitem id="menu_contract_type"
-              name="Contract Types"
-              parent="menu_contract_config_root"
-              action="action_contract_type"
-              sequence="2"
-              groups="gdm_contract.group_gdm_contract_manager"/>
+    <menuitem
+        id="menu_gdm_contract_dashboard"
+        name="Blockchain Dashboard"
+        parent="menu_gdm_contract_root"
+        action="action_gdm_blockchain_dashboard"
+        sequence="20"
+    />
+
+    <!-- Configuration menu -->
+    <menuitem
+        id="menu_gdm_contract_configuration"
+        name="Configuration"
+        parent="menu_gdm_contract_root"
+        sequence="90"
+    />
+
+    <menuitem
+        id="menu_gdm_contract_stages"
+        name="Contract Stages"
+        parent="menu_gdm_contract_configuration"
+        action="action_gdm_contract_stages"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_gdm_contract_types"
+        name="Contract Types"
+        parent="menu_gdm_contract_configuration"
+        action="action_gdm_contract_types"
+        sequence="20"
+    />
+
 </odoo>

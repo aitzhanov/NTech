@@ -1,0 +1,11 @@
+[workspace]
+members = [
+    "programs/contract_state_program",
+    "programs/document_verification_program"
+]
+resolver = "2"
+
+[profile.release]
+overflow-checks = true
+lto = "thin"
+codegen-units = 1

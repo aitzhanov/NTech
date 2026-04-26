@@ -45,6 +45,10 @@ def post_chatter(env, decision, body):
     Post a chatter message on the source entity (gdm.contract / gdm.snt / gdm.invoice)
     if the model supports mail.thread.
     """
+
+    if env.context.get('skip_ai_trigger'):
+        return
+    
     try:
         record = env[decision.entity_model].browse(decision.entity_res_id)
         if not record.exists():

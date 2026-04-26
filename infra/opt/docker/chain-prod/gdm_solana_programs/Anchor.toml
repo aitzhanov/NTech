@@ -1,0 +1,10 @@
+[programs.localnet]
+contract_state_program = "FhXXErPW17TR5sX1ZviQNP7BuZnV22hiixtf1Ww9tYQ5"
+document_verification_program = "EgUwhV4jgzB4r8Xd1mFDFBFUMN83GVyWvwL81mPRN7uy"
+
+[provider]
+cluster = "localnet"
+wallet = "/keys/contract-program-keypair.json"
+
+[scripts]
+test = "mocha -t 1000000 tests/**/*.ts"

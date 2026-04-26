@@ -18,7 +18,7 @@ from solana.rpc.commitment import Confirmed
 from solana.rpc.types import TxOpts
 
 
-CONTRACT_PROGRAM_ID = Pubkey.from_string("FhXXErPW17TR5sX1ZviQNP7BuZnV22hiixtf1Ww9tYQ5")
+CONTRACT_PROGRAM_ID = Pubkey.from_string("47ffdTBLYsUpMMTYKnY6pMAUnQRXtCayLULTjWBryRns")
 
 # Solana PDA seed max length is 32 bytes per seed.
 _SEED_MAX_BYTES = 32

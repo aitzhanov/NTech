@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("Ctrt1111111111111111111111111111111111111");
+declare_id!("47ffdTBLYsUpMMTYKnY6pMAUnQRXtCayLULTjWBryRns");
 
 #[program]
 pub mod contract_state_program {

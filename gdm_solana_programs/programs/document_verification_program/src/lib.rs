@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("Docu1111111111111111111111111111111111111");
+declare_id!("CEDTERJ724BMEcUauM4GdFKH3P11fLRqvLULUoVoC5g9");
 
 #[program]
 pub mod document_verification_program {

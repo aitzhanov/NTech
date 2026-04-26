@@ -205,7 +205,7 @@ class GDMOrchestratorService(models.AbstractModel):
                         else str(document.contract_id.id)
                     )
 
-        decision.write({
+        decision.with_context(skip_ai_trigger=True).write({
             'blockchain_sync_status': 'prepared',
             'blockchain_payload_json': payload,
         })
@@ -235,7 +235,7 @@ class GDMOrchestratorService(models.AbstractModel):
             if response.get('skipped'):
                 sync_status = 'confirmed'
 
-            decision.write({
+            decision.with_context(skip_ai_trigger=True).write({
                 'blockchain_request_id': request_id,
                 'blockchain_tx_hash': tx_hash,
                 'blockchain_action': bridge_method_name,
@@ -250,7 +250,7 @@ class GDMOrchestratorService(models.AbstractModel):
         else:
             error_code = response.get('error_code', 'bridge_error')
             error_message = response.get('error_message', str(response))
-            decision.write({
+            decision.with_context(skip_ai_trigger=True).write({
                 'blockchain_sync_status': 'failed',
                 'blockchain_action_status': 'failed',
                 'blockchain_error_code': error_code,
@@ -272,7 +272,7 @@ class GDMOrchestratorService(models.AbstractModel):
             if onchain.get('version'):
                 write_vals['onchain_version'] = onchain['version']
             if write_vals:
-                contract.write(write_vals)
+                contract.with_context(skip_ai_trigger=True).write(write_vals)
         except Exception:
             _logger.exception(
                 '[orchestrator] _sync_contract_blockchain_fields failed decision=%s', decision.id

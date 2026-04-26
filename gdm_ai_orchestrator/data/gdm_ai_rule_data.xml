@@ -4,7 +4,7 @@
         <field name="code">missing_supplier</field>
         <field name="sequence">10</field>
         <field name="active">True</field>
-        <field name="entity_model">gdm.contract</field>
+        <field name="entity_model">contract.contract</field>
         <field name="check_type">field_required</field>
         <field name="field_name">supplier_id</field>
         <field name="risk_level">high</field>
@@ -20,7 +20,7 @@
         <field name="code">missing_contract_dates</field>
         <field name="sequence">20</field>
         <field name="active">True</field>
-        <field name="entity_model">gdm.contract</field>
+        <field name="entity_model">contract.contract</field>
         <field name="check_type">field_required</field>
         <field name="field_name">date_start</field>
         <field name="risk_level">high</field>
@@ -36,7 +36,7 @@
         <field name="code">missing_financials</field>
         <field name="sequence">30</field>
         <field name="active">True</field>
-        <field name="entity_model">gdm.contract</field>
+        <field name="entity_model">contract.contract</field>
         <field name="check_type">field_required</field>
         <field name="field_name">amount_total</field>
         <field name="risk_level">medium</field>
@@ -52,7 +52,7 @@
         <field name="code">invalid_date_range</field>
         <field name="sequence">40</field>
         <field name="active">True</field>
-        <field name="entity_model">gdm.contract</field>
+        <field name="entity_model">contract.contract</field>
         <field name="check_type">date_range</field>
         <field name="risk_level">high</field>
         <field name="decision_on_fail">invalid</field>
@@ -67,7 +67,7 @@
         <field name="code">invoice_amount_exceeds_contract</field>
         <field name="sequence">50</field>
         <field name="active">True</field>
-        <field name="entity_model">gdm.contract</field>
+        <field name="entity_model">contract.contract</field>
         <field name="check_type">amount_consistency</field>
         <field name="threshold">1.2</field>
         <field name="risk_level">medium</field>
@@ -83,7 +83,7 @@
         <field name="code">contract_ready_onchain</field>
         <field name="sequence">99</field>
         <field name="active">True</field>
-        <field name="entity_model">gdm.contract</field>
+        <field name="entity_model">contract.contract</field>
         <field name="check_type">custom</field>
         <field name="risk_level">low</field>
         <field name="decision_on_fail">not_ready</field>

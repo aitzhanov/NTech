@@ -67,6 +67,26 @@ We propose a system where:
 
 ---
 
+## UPDATE: 🧠 AI Quarterly LPG Request Generation
+
+The system can automatically generate the next-quarter LPG request from the previous approved contract.
+
+This reduces corruption risks because gas companies cannot silently increase requested volumes for the next quarter.
+The generated request keeps the previous approved volume, links the source contract, and stores the reason for generation.
+
+
+
+Generated fields include:
+
+- AI Generated
+- Volume Locked
+- Allocation Quarter
+- Allocation Year
+- Source Approved Contract
+- Generation Reason
+
+---
+
 ## 🔄 System Flow
 
                 ┌───────────────────────┐

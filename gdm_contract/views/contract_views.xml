@@ -32,6 +32,10 @@
                             string="Approve via AI + Blockchain"
                             type="object"
                             class="oe_highlight"/>
+                    <button name="action_generate_next_quarter_request"
+                            string="AI Generate Next Quarter"
+                            type="object"
+                            class="btn-primary"/>
                     <button name="action_verify_onchain"
                             string="Verify on-chain"
                             type="object"/>
@@ -61,6 +65,11 @@
                             <field name="date_start"/>
                             <field name="date_end"/>
                             <field name="volume_total"/>
+                            <field name="ai_generated" readonly="1"/>
+                            <field name="volume_locked" readonly="1"/>
+                            <field name="allocation_quarter" readonly="1"/>
+                            <field name="allocation_year" readonly="1"/>
+                            <field name="source_contract_id" readonly="1"/>
                             <field name="uom_id"/>
                             <field name="currency_id" groups="base.group_multi_currency"/>
                             <field name="amount_total"/>
@@ -78,6 +87,11 @@
                                     <field name="blockchain_tx" readonly="1"/>
                                     <field name="uuid" readonly="1"/>
                                 </group>
+                            </group>
+                        </page>
+                        <page string="AI Generation" name="ai_generation">
+                            <group>
+                                <field name="generation_reason" readonly="1"/>
                             </group>
                         </page>
                         <page string="Notes" name="notes">

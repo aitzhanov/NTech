@@ -3,6 +3,8 @@
 # gdm_contract/models/contract.py
 import logging
 import uuid
+import calendar
+from datetime import date
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
@@ -58,6 +60,29 @@ class Contract(models.Model):
     date_end = fields.Date(string='End date', tracking=True)
 
     volume_total = fields.Float(string='Total volume')
+        # AI quarterly request generation
+    ai_generated = fields.Boolean(string='AI Generated', default=False, tracking=True)
+    volume_locked = fields.Boolean(string='Volume Locked', default=False, tracking=True)
+
+    allocation_quarter = fields.Selection(
+        [('1', 'Q1'), ('2', 'Q2'), ('3', 'Q3'), ('4', 'Q4')],
+        string='Allocation Quarter',
+        tracking=True,
+    )
+    allocation_year = fields.Integer(string='Allocation Year', tracking=True)
+
+    source_contract_id = fields.Many2one(
+        'contract.contract',
+        string='Source Approved Contract',
+        readonly=True,
+        tracking=True,
+    )
+
+    generation_reason = fields.Text(
+        string='Generation Reason',
+        readonly=True,
+    )
+
     uom_id = fields.Many2one('uom.uom', string='Unit of Measure')
     currency_id = fields.Many2one(
         'res.currency', string='Currency',
@@ -152,6 +177,83 @@ class Contract(models.Model):
         except Exception:
             _logger.exception('[contract] uuid refresh failed ids=%s', self.ids)
         return res
+
+       
+    # ------------------------------------------------------------------ #
+    # AI quarterly generation                                              #
+    # ------------------------------------------------------------------ #
+
+    def _get_next_quarter_period(self):
+        self.ensure_one()
+
+        base = self.date_end or self.date_start or self.date or fields.Date.today()
+        if isinstance(base, str):
+            base = fields.Date.from_string(base)
+
+        current_quarter = ((base.month - 1) // 3) + 1
+        next_quarter = current_quarter + 1
+        year = base.year
+
+        if next_quarter > 4:
+            next_quarter = 1
+            year += 1
+
+        start_month = (next_quarter - 1) * 3 + 1
+        end_month = start_month + 2
+        last_day = calendar.monthrange(year, end_month)[1]
+
+        date_start = date(year, start_month, 1)
+        date_end = date(year, end_month, last_day)
+
+        return str(next_quarter), year, date_start, date_end
+
+    def action_generate_next_quarter_request(self):
+        for rec in self:
+            if not rec.volume_total:
+                raise UserError(_('Cannot generate request: previous approved volume is empty.'))
+
+            quarter, year, date_start, date_end = rec._get_next_quarter_period()
+
+            existing = self.search([
+                ('source_contract_id', '=', rec.id),
+                ('allocation_quarter', '=', quarter),
+                ('allocation_year', '=', year),
+            ], limit=1)
+
+            if existing:
+                return existing.action_open_contract()
+
+            new_contract = self.create({
+                'name': 'AI Generated LPG Request Q%s %s' % (quarter, year),
+                'contract_type_id': rec.contract_type_id.id if rec.contract_type_id else False,
+                'operator_comp_id': rec.operator_comp_id.id if rec.operator_comp_id else self.env.company.id,
+                'operator_comp_ceo_id': rec.operator_comp_ceo_id.id if rec.operator_comp_ceo_id else False,
+                'operator_comp_executor_id': rec.operator_comp_executor_id.id if rec.operator_comp_executor_id else False,
+                'supplier_id': rec.supplier_id.id if rec.supplier_id else False,
+                'date': fields.Date.today(),
+                'date_start': date_start,
+                'date_end': date_end,
+                'volume_total': rec.volume_total,
+                'uom_id': rec.uom_id.id if rec.uom_id else False,
+                'currency_id': rec.currency_id.id if rec.currency_id else self.env.company.currency_id.id,
+                'amount_total': rec.amount_total,
+                'ai_generated': True,
+                'volume_locked': True,
+                'allocation_quarter': quarter,
+                'allocation_year': year,
+                'source_contract_id': rec.id,
+                'generation_reason': (
+                    'Generated automatically from previous approved contract %s. '
+                    'Approved volume was preserved: %s.'
+                ) % (rec.number or rec.name, rec.volume_total),
+                'note': (
+                    '<p><b>AI-generated quarterly request.</b></p>'
+                    '<p>Volume was copied from previous approved contract and locked '
+                    'to reduce manual manipulation and corruption risk.</p>'
+                ),
+            })
+
+            return new_contract.action_open_contract()
 
     # ------------------------------------------------------------------ #
     # Blockchain helpers                                                   #
